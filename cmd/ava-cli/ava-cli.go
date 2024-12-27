@@ -1,9 +1,9 @@
 package main
 
 import (
-	"ava/internal/context"
-	"ava/internal/ntfy"
-	"ava/internal/brain"
+	"github.com/theabdullahalam/ava-go/internal/context"
+	"github.com/theabdullahalam/ava-go/internal/ntfy"
+	"github.com/theabdullahalam/ava-go/internal/brain"
 	"bufio"
 	"fmt"
 	"log"

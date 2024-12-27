@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 	
-	"ava/internal/context"
-	"ava/internal/brain"
+	"github.com/theabdullahalam/ava-go/internal/context"
+	"github.com/theabdullahalam/ava-go/internal/brain"
 )
 
 
