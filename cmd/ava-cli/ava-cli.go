@@ -11,6 +11,13 @@ import (
 	"os"
 )
 
+func handleResponse(ava_response brain.MessageObj) {
+	fmt_string := "Ava: %s\nYou: "
+	if ava_response.Target == "user" && ava_response.Type == "message" && ava_response.Source == "ava" {
+		fmt.Printf(fmt_string, ava_response.Message)
+	}
+}
+
 func listen() {
 
 	ava_topic, _ := context.GetFromContext("ava_topic")
@@ -23,11 +30,8 @@ func listen() {
 	defer resp.Body.Close()
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
-		fmt_string := "Ava: %s\nYou: "
 		if ava_response, ok := ntfy.GetMessageFromEvent(scanner.Text()); ok {
-			if ava_response.Target == "user" && ava_response.Type == "message" && ava_response.Source == "ava" {
-				fmt.Printf(fmt_string, ava_response.Message)
-			}
+			handleResponse(ava_response)
 		}
 	}
 }
@@ -64,7 +68,7 @@ func main() {
 
 		// send it to ava
 		ntfy.PublishMessage(brain.NewMessageObj(user_message, "user", "ava"))
-		// fmt.Printf("You: ")
+
 	}
 
 	fmt.Printf("\n")
