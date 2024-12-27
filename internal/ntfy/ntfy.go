@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/theabdullahalam/ava-go/internal/brain"
+	"github.com/theabdullahalam/ava-go/internal/brain/messages"
 	"github.com/theabdullahalam/ava-go/internal/context"
 )
 
-func PublishMessage(messageObj brain.MessageObj) {
+func PublishMessage(messageObj messages.MessageObj) {
 
 	jsonString, ok := messageObj.JsonString()
 	if !ok {
@@ -22,7 +22,7 @@ func PublishMessage(messageObj brain.MessageObj) {
 	http.Post(topic_url, "text/plain", strings.NewReader(jsonString))
 }
 
-func GetMessageFromEvent(event string) (brain.MessageObj, bool) {
+func GetMessageFromEvent(event string) (messages.MessageObj, bool) {
 
 	var messageString string
 	var ok bool
@@ -31,17 +31,17 @@ func GetMessageFromEvent(event string) (brain.MessageObj, bool) {
 	decoder := json.NewDecoder(strings.NewReader(event))
 	if err := decoder.Decode(&eventObject); err != nil {
 		fmt.Println(err)
-		return brain.MessageObj{}, false
+		return messages.MessageObj{}, false
 	}
 
 	if messageString, ok = eventObject["message"].(string); !ok {
-		return brain.MessageObj{}, false
+		return messages.MessageObj{}, false
 	}
 
-	var messageObj brain.MessageObj
+	var messageObj messages.MessageObj
 	decoder = json.NewDecoder(strings.NewReader(messageString))
 	if err := decoder.Decode(&messageObj); err != nil {
-		return brain.MessageObj{}, false
+		return messages.MessageObj{}, false
 	}
 
 	return messageObj, true

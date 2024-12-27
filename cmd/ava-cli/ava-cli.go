@@ -3,15 +3,16 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/theabdullahalam/ava-go/internal/brain"
-	"github.com/theabdullahalam/ava-go/internal/context"
-	"github.com/theabdullahalam/ava-go/internal/ntfy"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/theabdullahalam/ava-go/internal/brain/messages"
+	"github.com/theabdullahalam/ava-go/internal/context"
+	"github.com/theabdullahalam/ava-go/internal/ntfy"
 )
 
-func handleResponse(ava_response brain.MessageObj) {
+func handleResponse(ava_response messages.MessageObj) {
 	fmt_string := "Ava: %s\nYou: "
 	if ava_response.Target == "user" && ava_response.Type == "message" && ava_response.Source == "ava" {
 		fmt.Printf(fmt_string, ava_response.Message)
@@ -67,7 +68,7 @@ func main() {
 		user_message = user_message[:len(user_message)-1]
 
 		// send it to ava
-		ntfy.PublishMessage(brain.NewMessageObj(user_message, "user", "ava"))
+		ntfy.PublishMessage(messages.NewMessageObj(user_message, "user", "ava"))
 
 	}
 
