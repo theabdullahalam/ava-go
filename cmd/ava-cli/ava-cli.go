@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/theabdullahalam/ava-go/internal/context"
-	"github.com/theabdullahalam/ava-go/internal/ntfy"
-	"github.com/theabdullahalam/ava-go/internal/brain"
 	"bufio"
 	"fmt"
+	"github.com/theabdullahalam/ava-go/internal/brain"
+	"github.com/theabdullahalam/ava-go/internal/context"
+	"github.com/theabdullahalam/ava-go/internal/ntfy"
 	"log"
 	"net/http"
 	"os"
@@ -28,7 +28,7 @@ func listen() {
 			if ava_response.Target == "user" && ava_response.Type == "message" && ava_response.Source == "ava" {
 				fmt.Printf(fmt_string, ava_response.Message)
 			}
-		} 
+		}
 	}
 }
 
@@ -53,12 +53,12 @@ func main() {
 		if user_message == "\n" {
 			continue
 		}
-		
+
 		// quit
 		if user_message == "\\q\n" {
 			break
 		}
-		
+
 		// if it is a regular message,
 		user_message = user_message[:len(user_message)-1]
 

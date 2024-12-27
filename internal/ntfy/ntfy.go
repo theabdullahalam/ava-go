@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	
-	"github.com/theabdullahalam/ava-go/internal/context"
+
 	"github.com/theabdullahalam/ava-go/internal/brain"
+	"github.com/theabdullahalam/ava-go/internal/context"
 )
-
-
 
 func PublishMessage(messageObj brain.MessageObj) {
 
@@ -26,8 +24,8 @@ func PublishMessage(messageObj brain.MessageObj) {
 
 func GetMessageFromEvent(event string) (brain.MessageObj, bool) {
 
-	var messageString string;
-	var ok bool;
+	var messageString string
+	var ok bool
 
 	var eventObject map[string]interface{}
 	decoder := json.NewDecoder(strings.NewReader(event))

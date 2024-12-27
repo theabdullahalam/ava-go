@@ -7,12 +7,12 @@ import (
 )
 
 type MessageObj struct {
-	Sender string
-	Message string
+	Sender    string
+	Message   string
 	Timestamp string
-	Source string
-	Target string
-	Type string
+	Source    string
+	Target    string
+	Type      string
 }
 
 func getTimeStampString() string {
@@ -21,12 +21,12 @@ func getTimeStampString() string {
 
 func NewMessageObj(message string, sender string, target string) MessageObj {
 	return MessageObj{
-		Sender: sender,
-		Message: message,
+		Sender:    sender,
+		Message:   message,
 		Timestamp: getTimeStampString(),
-		Source: "user",
-		Target: target,
-		Type: "message",
+		Source:    "user",
+		Target:    target,
+		Type:      "message",
 	}
 }
 
@@ -47,11 +47,11 @@ func GetResponse(messageObj MessageObj) MessageObj {
 	}
 
 	return MessageObj{
-		Sender: "Ava",
-		Message: fmt.Sprintf("You said \"%s\"", messageObj.Message),
+		Sender:    "Ava",
+		Message:   fmt.Sprintf("You said \"%s\"", messageObj.Message),
 		Timestamp: getTimeStampString(),
-		Source: "ava",
-		Target: messageObj.Sender,
-		Type: "message",
+		Source:    "ava",
+		Target:    messageObj.Sender,
+		Type:      "message",
 	}
 }

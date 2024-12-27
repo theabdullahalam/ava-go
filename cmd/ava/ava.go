@@ -2,13 +2,13 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"net/http"
-	"fmt"
 
+	"github.com/theabdullahalam/ava-go/internal/brain"
 	"github.com/theabdullahalam/ava-go/internal/context"
 	"github.com/theabdullahalam/ava-go/internal/ntfy"
-	"github.com/theabdullahalam/ava-go/internal/brain"
 )
 
 func listen() {

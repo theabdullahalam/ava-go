@@ -3,8 +3,8 @@ package context
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"github.com/google/uuid"
+	"os"
 )
 
 const CONTEXT_FILE string = "context.json"
@@ -52,7 +52,7 @@ func GetFromContext(key string) (string, bool) {
 		if strValue, ok := value.(string); ok { // ok will be false if the value is not a string
 			return strValue, true
 		}
-	}	
+	}
 
 	return "", false
 
