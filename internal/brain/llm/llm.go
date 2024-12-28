@@ -8,27 +8,47 @@ import (
 
 	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"
+	"github.com/theabdullahalam/ava-go/internal/brain/messages"
 )
 
-// var model *genai.GenerativeModel
-// var ctx go_context.Context
-
-func init() {
-	
-}
-
-func GetResponse(message string) string {
-
+func getModel() (go_context.Context, *genai.GenerativeModel, *genai.Client) {
 	ctx := go_context.Background()
 	client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_API_KEY")))
 	if err != nil {
 		log.Fatal(err)
 	}
+	
+	model := client.GenerativeModel("gemini-1.5-flash")
+	return ctx, model, client
+}
+
+func GetResponse(message string) string {
+	
+	// ai stuff
+	ctx, model, client := getModel()
 	defer client.Close()
 
-	model := client.GenerativeModel("gemini-1.5-flash")
+	// existing convo
+	message_objs_convo := messages.GetConversation()
+	cs := model.StartChat()
 
-	resp, err := model.GenerateContent(ctx, genai.Text(message))
+	for _, message_obj := range message_objs_convo {
+
+		role := "user"
+
+		if message_obj.Source == "ava" {
+			role = "model"
+		}
+
+		cs.History = append(cs.History, &genai.Content{
+			Parts: []genai.Part{
+				genai.Text(message_obj.Message),
+			},
+			Role: role,
+		})
+	}
+
+	resp, err := cs.SendMessage(ctx, genai.Text(message))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,16 +56,16 @@ func GetResponse(message string) string {
 
 	// potntial response because the part thingy below is something I don't understand and 
 	// might be incorrect or empty
-	var potential_response string
+	response := ""
 
 	for _, cand := range resp.Candidates {
 		if cand.Content != nil {
 			for _, part := range cand.Content.Parts {
-				potential_response = fmt.Sprintf("%s", part)
+				response += fmt.Sprintf("%s", part)
 			}
 		}
 	}
 
-	return potential_response
+	return response
 
 }

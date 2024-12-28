@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/theabdullahalam/ava-go/internal/brain"
+	"github.com/theabdullahalam/ava-go/internal/brain/messages"
 	"github.com/theabdullahalam/ava-go/internal/context"
 	"github.com/theabdullahalam/ava-go/internal/ntfy"
 )
@@ -30,10 +31,15 @@ func listen() {
 		}
 
 		if messageObj.Target == "ava" && messageObj.Type == "message" && messageObj.Source == "user" {
-			fmt.Printf("Recieved message: %s\n", messageObj.Message)
+			fmt.Printf("Recieved message!\n")
+			messages.AddToConversation(messageObj)
+
 			responseObj := brain.GetResponse(messageObj)
 			ntfy.PublishMessage(responseObj)
-			fmt.Printf("Sent response: %s\n", responseObj.Message)
+			messages.AddToConversation(responseObj)
+
+			fmt.Printf("Sent response!\n")
+
 			continue
 		}
 
