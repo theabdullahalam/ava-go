@@ -7,18 +7,15 @@ import (
 	"strings"
 
 	"github.com/theabdullahalam/ava-go/internal/brain/messages"
-	"github.com/theabdullahalam/ava-go/internal/context"
 )
 
-func PublishMessage(messageObj messages.MessageObj) {
+func PublishMessage(messageObj messages.MessageObj, topic string) {
 
 	jsonString, ok := messageObj.JsonString()
 	if !ok {
 		return
 	}
-
-	ava_topic, _ := context.GetFromContext("ava_topic")
-	topic_url := fmt.Sprintf("https://ntfy.sh/%s", ava_topic)
+	topic_url := fmt.Sprintf("https://ntfy.sh/%s", topic)
 	http.Post(topic_url, "text/plain", strings.NewReader(jsonString))
 }
 

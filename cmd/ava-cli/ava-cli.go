@@ -21,8 +21,8 @@ func handleResponse(ava_response messages.MessageObj) {
 
 func listen() {
 
-	ava_topic, _ := context.GetFromContext("ava_topic")
-	topic_url := fmt.Sprintf("https://ntfy.sh/%s/json", ava_topic)
+	topic, _ := context.GetFromContext("ava.json", "topic")
+	topic_url := fmt.Sprintf("https://ntfy.sh/%s/json", topic)
 
 	resp, err := http.Get(topic_url)
 	if err != nil {
@@ -41,6 +41,7 @@ func main() {
 
 	listening := false
 	reader := bufio.NewReader(os.Stdin)
+	topic, _ := context.GetFromContext("ava.json", "topic")
 	fmt.Printf("\nAva Chat\n----------\nYou: ")
 
 	for {
@@ -68,7 +69,7 @@ func main() {
 		user_message = user_message[:len(user_message)-1]
 
 		// send it to ava
-		ntfy.PublishMessage(messages.NewMessageObj(user_message, "user", "ava"))
+		ntfy.PublishMessage(messages.NewMessageObj(user_message, "user", "ava"), topic)
 
 	}
 

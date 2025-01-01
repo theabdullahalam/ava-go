@@ -3,6 +3,7 @@ package messages
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/theabdullahalam/ava-go/internal/utils"
 )
@@ -16,8 +17,14 @@ type MessageObj struct {
 	Type      string
 }
 
+type ActionObj struct {
+	Task string
+	target string
+	args []string
+}
 
 
+// creates a new MessageObj
 func NewMessageObj(message string, sender string, target string) MessageObj {
 	return MessageObj{
 		Sender:    sender,
@@ -29,6 +36,7 @@ func NewMessageObj(message string, sender string, target string) MessageObj {
 	}
 }
 
+// converts MessageObj to a jsonstring
 func (messageObj MessageObj) JsonString() (string, bool) {
 
 	jsonString, err := json.Marshal(messageObj)
@@ -38,4 +46,9 @@ func (messageObj MessageObj) JsonString() (string, bool) {
 	}
 
 	return string(jsonString), true
+}
+
+func (messageObj MessageObj) GetActionObj() string {
+	action_string :=strings.Split(strings.Split(messageObj.Message, "```json\n")[1], "```")[0]
+	return action_string
 }

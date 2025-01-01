@@ -14,8 +14,8 @@ import (
 
 func listen() {
 
-	ava_topic, _ := context.GetFromContext("ava_topic")
-	topic_url := fmt.Sprintf("https://ntfy.sh/%s/json", ava_topic)
+	topic, _ := context.GetFromContext("ava.json","topic")
+	topic_url := fmt.Sprintf("https://ntfy.sh/%s/json", topic)
 
 	resp, err := http.Get(topic_url)
 	if err != nil {
@@ -35,10 +35,11 @@ func listen() {
 			messages.AddToConversation(messageObj)
 
 			responseObj := brain.GetResponse(messageObj)
-			ntfy.PublishMessage(responseObj)
+			ntfy.PublishMessage(responseObj, topic)
 			messages.AddToConversation(responseObj)
 
 			fmt.Printf("Sent response!\n")
+			fmt.Println(responseObj.GetActionObj())
 
 			continue
 		}
