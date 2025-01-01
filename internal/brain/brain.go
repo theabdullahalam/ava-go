@@ -1,9 +1,11 @@
 package brain
 
 import (
+	"fmt"
+
+	"github.com/theabdullahalam/ava-go/internal/brain/llm"
 	"github.com/theabdullahalam/ava-go/internal/brain/messages"
 	"github.com/theabdullahalam/ava-go/internal/utils"
-	"github.com/theabdullahalam/ava-go/internal/brain/llm"
 )
 
 func GetResponse(messageObj messages.MessageObj) messages.MessageObj {
@@ -11,12 +13,25 @@ func GetResponse(messageObj messages.MessageObj) messages.MessageObj {
 		return messageObj
 	}
 
-	return messages.MessageObj{
+	ava_response := llm.GetResponse(messageObj.Message) 
+	
+	ava_reponse_obj := messages.MessageObj{
 		Sender:    "Ava",
-		Message:   llm.GetResponse(messageObj.Message),
+		Message:   ava_response,
 		Timestamp: utils.GetTimeStampString(),
 		Source:    "ava",
 		Target:    messageObj.Sender,
 		Type:      "message",
 	}
+
+
+	// if there is an action, try to run it
+	if ava_reponse_obj.HasAction() {
+		actionObj := ava_reponse_obj.GetActionObj()
+		result := actionObj.RunAction()
+		fmt.Println(result)
+
+	}
+
+	return ava_reponse_obj
 }

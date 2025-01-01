@@ -4,3 +4,13 @@ Generalised node:
     1: A get_meta action, which publishes a list of actions on it's channel, which ava can save.
     2: A listener that listens for actions and executes them.
     3: A publisher that publishes events and actions for ava to act on.
+
+
+
+
+Tasks:
+    - Name
+    - Description
+    - Target
+    - Args
+    - Type [internal/api/script]

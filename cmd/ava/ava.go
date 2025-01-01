@@ -39,7 +39,6 @@ func listen() {
 			messages.AddToConversation(responseObj)
 
 			fmt.Printf("Sent response!\n")
-			fmt.Println(responseObj.GetActionObj())
 
 			continue
 		}

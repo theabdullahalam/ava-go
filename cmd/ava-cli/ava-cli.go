@@ -13,9 +13,9 @@ import (
 )
 
 func handleResponse(ava_response messages.MessageObj) {
-	fmt_string := "Ava: %s\nYou: "
+	fmt_string := "Ava: %sYou: "
 	if ava_response.Target == "user" && ava_response.Type == "message" && ava_response.Source == "ava" {
-		fmt.Printf(fmt_string, ava_response.Message)
+		fmt.Printf(fmt_string, ava_response.GetMessageOnly())
 	}
 }
 
@@ -39,16 +39,13 @@ func listen() {
 
 func main() {
 
-	listening := false
 	reader := bufio.NewReader(os.Stdin)
 	topic, _ := context.GetFromContext("ava.json", "topic")
 	fmt.Printf("\nAva Chat\n----------\nYou: ")
+	go listen()
 
 	for {
-		if !listening {
-			listening = true
-			go listen()
-		}
+		
 		user_message, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Println(err)

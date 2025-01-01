@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/theabdullahalam/ava-go/internal/utils"
+	"github.com/theabdullahalam/ava-go/internal/tasks"
 )
 
 type MessageObj struct {
@@ -18,9 +19,14 @@ type MessageObj struct {
 }
 
 type ActionObj struct {
-	Task string
-	target string
-	args []string
+	Name string
+	Args []string
+}
+
+
+func (actionObj ActionObj) RunAction() string{
+	task := tasks.GetTask(actionObj.Name)
+	return task.Run(actionObj.Args)
 }
 
 
@@ -48,7 +54,37 @@ func (messageObj MessageObj) JsonString() (string, bool) {
 	return string(jsonString), true
 }
 
-func (messageObj MessageObj) GetActionObj() string {
+func (messageObj MessageObj) HasAction() bool {
+	return strings.Contains(messageObj.Message, "\n```json\n") 
+}
+
+func (messageObj MessageObj) GetActionObj() ActionObj {
+
+	if !messageObj.HasAction() {
+		return ActionObj{}
+	}
+
 	action_string :=strings.Split(strings.Split(messageObj.Message, "```json\n")[1], "```")[0]
-	return action_string
+
+	var actionObj ActionObj
+	decoder := json.NewDecoder(strings.NewReader(action_string))
+	if err := decoder.Decode(&actionObj); err != nil {
+		fmt.Println(err)
+	}
+
+	return actionObj
+}
+
+func (messageObj MessageObj) GetMessageOnly() string {
+
+	if !messageObj.HasAction() {
+		return messageObj.Message
+	}
+
+	parts := strings.Split(messageObj.Message, "```json\n")
+	if strings.Contains(parts[0], "```json\n"){
+		return parts[1]
+	} else {
+		return parts[0]
+	}
 }

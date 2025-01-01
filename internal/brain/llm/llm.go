@@ -53,9 +53,6 @@ func GetResponse(message string) string {
 		log.Fatal(err)
 	}
 
-
-	// potntial response because the part thingy below is something I don't understand and 
-	// might be incorrect or empty
 	response := ""
 
 	for _, cand := range resp.Candidates {
