@@ -2,6 +2,8 @@ package tasks
 
 import (
 	"fmt"
+
+	"github.com/theabdullahalam/ava-go/internal/nodes"
 )
 
 func RunInternalTask(name string, args []string) string {
@@ -11,7 +13,10 @@ func RunInternalTask(name string, args []string) string {
 	switch name {
 	case "SayThis":
 		response = SayThis(args[0])
+	case "AddNode":
+		response = AddNode(args[0])
 	}
+
 
 	return response
 }
@@ -21,6 +26,7 @@ func SayThis(s string) string{
 	return "Said " + s
 }
 
-func GetIpAddress() string {
-	return "127.0.0.1"
+func AddNode(topic string) string {
+	nodes.AddNode(nodes.NewNode("-", topic))
+	return "Added node " + topic
 }

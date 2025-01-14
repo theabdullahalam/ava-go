@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"path/filepath"
+	"github.com/google/uuid"
 )
 
 func GetTimeStampString() string {
@@ -25,4 +26,8 @@ func GetAvaFolder() string {
 	os.MkdirAll(ava_folder, 0755)
 
 	return ava_folder
+}
+
+func GetNewUuid() string {
+	return uuid.New().String()
 }

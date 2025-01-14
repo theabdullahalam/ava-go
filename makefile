@@ -9,3 +9,6 @@ ava-cli:
 
 ava-node:
 	go run ./cmd/ava-desktop-node/
+
+node:
+	go run ./cmd/linux-node/

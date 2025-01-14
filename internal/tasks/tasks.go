@@ -26,6 +26,11 @@ func (task Task) Run(args []string) string {
 	if task.Type == "internal" {
 		response = RunInternalTask(task.Name, args)
 	}
+
+	if task.Type == "script" {
+		fmt.Printf("\nRunning script %s on node %s\n", task.Name, task.Target)
+	}
+
 	return response
 }
 
