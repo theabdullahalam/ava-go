@@ -6,17 +6,28 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/theabdullahalam/ava-go/internal/brain/messages"
+	
 	"github.com/theabdullahalam/ava-go/internal/context"
-	"github.com/theabdullahalam/ava-go/internal/ntfy"
+	"github.com/theabdullahalam/ava-go/internal/utils"
+	"github.com/theabdullahalam/ava-go/internal/ntfy2"
+
+	"github.com/theabdullahalam/ava-go/internal/brain2"
 )
 
-func handleResponse(ava_response messages.MessageObj) {
-	fmt_string := "Ava: %sYou: "
-	if ava_response.Target == "user" && ava_response.Type == "message" && ava_response.Source == "ava" {
-		fmt.Printf(fmt_string, ava_response.GetMessageOnly())
+func handleResponse(message string) {
+	fmt_string := "Ava: %s\nYou: "
+	
+	tags, err := utils.ExtractTags(message)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
+	for _, tag := range tags {
+		if tag.Name == "user" {
+			fmt.Printf(fmt_string, tag.Content)
+		}
+	}
+
 }
 
 func listen() {
@@ -31,16 +42,26 @@ func listen() {
 	defer resp.Body.Close()
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
-		if ava_response, ok := ntfy.GetMessageFromEvent(scanner.Text()); ok {
-			handleResponse(ava_response)
+
+		message, ok := ntfy2.GetMessageFromEvent(scanner.Text())
+
+		if !ok {
+			continue
 		}
+
+		handleResponse(message)
 	}
 }
 
 func main() {
 
+	ava, ok := brain2.GetAva()
+	if !ok {
+		fmt.Println("Ava not set")
+		return
+	}
+
 	reader := bufio.NewReader(os.Stdin)
-	topic, _ := context.GetFromContext("ava.json", "topic")
 	fmt.Printf("\nAva Chat\n----------\nYou: ")
 	go listen()
 
@@ -64,9 +85,10 @@ func main() {
 
 		// if it is a regular message,
 		user_message = user_message[:len(user_message)-1]
+		tagged_user_message := brain2.GetTaggedString(user_message, "ava")
 
 		// send it to ava
-		ntfy.PublishMessage(messages.NewMessageObj(user_message, "user", "ava"), topic)
+		ava.Publish(tagged_user_message)
 
 	}
 

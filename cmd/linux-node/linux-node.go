@@ -2,45 +2,43 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-
-	// "path/filepath"
 
 	"github.com/theabdullahalam/ava-go/internal/brain2"
 	"github.com/theabdullahalam/ava-go/internal/context"
 	"github.com/theabdullahalam/ava-go/internal/ntfy2"
 )
 
-type ActionMessage struct {
-	Name string
-	Args []string
-}
-
-func newActionMessage(message string) (ActionMessage, bool) {
-	var actionMessage ActionMessage
-	err := json.Unmarshal([]byte(message), &actionMessage)
-	if err != nil {
-		fmt.Println(err)
-		return ActionMessage{}, false
-	}
-	return actionMessage, true
-}
 
 func processMessage(message string) {
-	actionMessage, ok := newActionMessage(message)
+	actionMessage, ok := brain2.GetActionMessageObj(message)
 	if !ok {
 		fmt.Println("User message: " + message)
 		return
 	}
-	fmt.Println("Action message: " + actionMessage.Name)
+	fmt.Println("Running action: " + actionMessage.Name)
+	node, ok := brain2.GetThisNode()
+	if !ok {
+		fmt.Println("Could not find node.json")
+		return
+	}
+	result := node.Run(actionMessage.Name, actionMessage.Args)
+	taggedResult := brain2.GetTaggedString(result, "result")
+
+	ava, ok := brain2.GetAva()
+	if !ok {
+		fmt.Println("Ava not set")
+	}
+
+	ava.Publish(taggedResult)
 }
 
 func set(key string, value string) {
 	context.SetContext("node.json", key, value)
+	fmt.Println("Set " + key + " to " + value)
 }
 
 func listen() {
@@ -71,7 +69,6 @@ func listen() {
 }
 
 func main() {
-	fmt.Println("Booting up linux node...")
 	
 	args := os.Args[1:]
 	if len(args) == 3 {
@@ -81,6 +78,7 @@ func main() {
 		}
 	}
 	
+	fmt.Println("Booting up linux node...")
 	listen()
 
 }

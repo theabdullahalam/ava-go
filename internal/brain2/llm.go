@@ -1,4 +1,4 @@
-package llm
+package brain2
 
 import (
 	go_context "context"
@@ -9,7 +9,6 @@ import (
 	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"
 
-	"github.com/theabdullahalam/ava-go/internal/brain2"
 )
 
 func getModel() (go_context.Context, *genai.GenerativeModel, *genai.Client) {
@@ -23,14 +22,14 @@ func getModel() (go_context.Context, *genai.GenerativeModel, *genai.Client) {
 	return ctx, model, client
 }
 
-func GetResponse(message string) string {
+func GetLLMResponse(message string) string {
 	
 	// ai stuff
 	ctx, model, client := getModel()
 	defer client.Close()
 
 	// existing convo
-	message_objs_convo := brain2.GetConversation()
+	message_objs_convo := GetConversation()
 	cs := model.StartChat()
 
 	for _, message_obj := range message_objs_convo {

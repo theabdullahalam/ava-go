@@ -2,14 +2,19 @@ package brain2
 
 import (
 	"encoding/json"
+	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/theabdullahalam/ava-go/internal/context"
 	"github.com/theabdullahalam/ava-go/internal/utils"
 )
 
 type Payload struct {
-	Name string
+	Key string
+	Value string
 	Description string
 }
 
@@ -35,6 +40,22 @@ func (node Node) FilePath() string {
 	return filepath.Join(utils.GetAvaFolder(), "network", node.Name + ".json")
 }
 
+func GetTaggedString(message string, tag string) string {
+	return fmt.Sprintf("{{%s}}%s{{/%s}}", tag, message, tag)
+}
+
+func (node Node) Publish(message string) {
+
+	topic := node.Topic
+	topic_url := fmt.Sprintf("https://ntfy.sh/%s", topic)
+	resp, err := http.Post(topic_url, "text/plain", strings.NewReader(message))
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer resp.Body.Close()
+
+}
+
 func GetNetworkNode(name string) (Node, bool) {
 
 	var node Node = Node{};
@@ -56,6 +77,14 @@ func GetNetworkNode(name string) (Node, bool) {
 
 	return Node{}, false
 
+}
+
+func GetAva() (Node, bool) {
+	ava_topic, ok := context.GetFromContext("node.json", "ava")
+	if !ok {
+		return Node{}, false
+	}
+	return Node{Name: "Ava", Topic: ava_topic}, true
 }
 
 func GetNode(name string) (Node, bool) {

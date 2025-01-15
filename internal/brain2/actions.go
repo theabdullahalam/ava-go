@@ -1,8 +1,27 @@
 package brain2
 
 import (
+	"encoding/json"
+	"fmt"
 	"os/exec"
+	"strings"
 )
+
+type ActionMessage struct {
+	Name string
+	Args []string
+}
+
+func GetActionMessageObj(message string) (ActionMessage, bool) {
+	var actionMessage ActionMessage
+	decoder := json.NewDecoder(strings.NewReader(message))
+	err := decoder.Decode(&actionMessage)
+	if err != nil {
+		fmt.Println(err)
+		return ActionMessage{}, false
+	}
+	return actionMessage, true
+}
 
 func (node Node) Run(action string, args []string) string {
 	for _, a := range node.Actions {
@@ -24,3 +43,13 @@ func (action Action) Run(args []string) string {
 
 	return "Could not run action"
 }
+
+
+
+
+
+
+
+
+
+// internal actions
